@@ -17,3 +17,4 @@ def coarse_grain_matrix(M_a, g_ba, V):
     '''
     g_ba_inv = _inverse_projection_form(g_ba, V)
     M_b = coarse_grain_form(M_a, g_ba, g_ba_inv)
+    return M_b
