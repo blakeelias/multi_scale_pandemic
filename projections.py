@@ -1,15 +1,22 @@
 import numpy as np
 
-import coarse_grain_dynamics
+from coarse_grain_dynamics import coarse_grain_form, coarse_grain_matrix
 
 
 class Projections:
     def moore_penrose(self, M_a, g_ba):
+        '''
+        Use Moore-Penrose pseudo-inverse as the g_ab matrix (right-inverse to g_ba).
+        Divides cases in a coarse-grained region equally into all fine-grained regions it is comprised of.
+        '''
         g_ba_inv = np.linalg.pinv(g_ba)
-        M_b = coarse_grain_dynamics.coarse_grain_form(M_a, g_ba, g_ba_inv)
+        M_b = coarse_grain_form(M_a, g_ba, g_ba_inv)
         return M_b
 
     def top_b_eigenvectors(self, M_a, g_ba):
+        '''
+        Use top b eigenvectors of M_a as the `V` matrix.
+        '''
         n_b, n_a = g_ba.shape
 
         Lambda_col_a, V_a = np.linalg.eig(M_a)
@@ -17,7 +24,7 @@ class Projections:
         idx = Lambda_col_a.argsort()[-n_b:][::-1]   
         Lambda_col_a_top_b = Lambda_col_a[idx]  # top n_b eigenvalues
         V_a_top_b = V_a[:,idx]           # corresponding eigenvectors
-        M_b = coarse_grain_dynamics.coarse_grain_matrix(M_a, g_ba, V_a_top_b)
+        M_b = coarse_grain_matrix(M_a, g_ba, V_a_top_b)
 
         return M_b
 
@@ -30,12 +37,16 @@ class Projections:
         Lambda_col_a_top_b = Lambda_col_a[idx]  # top 1 eigenvalue
         V_a_top_1 = V_a[:,idx]           # corresponding eigenvectors
         V = np.tile(V_a_top_1, n_b)
-        M_b = coarse_grain_dynamics.coarse_grain_matrix(M_a, g_ba, V)
+        M_b = coarse_grain_matrix(M_a, g_ba, V)
 
         return M_b
     '''
 
     def top_eigenvector_normalized(self, M_a, g_ba):
+        '''
+        Assign the cases in a coarse-grained region, only to the fine-grained regions it is composed of.
+        Divide the cases according to their ratio in the top eigenvector.
+        '''
         n_b, n_a = g_ba.shape
 
         Lambda_col_a, V_a = np.linalg.eig(M_a)
@@ -54,6 +65,6 @@ class Projections:
         
         g_ab = np.diag(top_eigenvector) @ g_ba.T @ np.linalg.inv(np.diag(projected_eigenvector))
 
-        M_b = coarse_grain_dynamics.coarse_grain_form(M_a, g_ba, g_ab)
+        M_b = coarse_grain_form(M_a, g_ba, g_ab)
 
         return M_b
