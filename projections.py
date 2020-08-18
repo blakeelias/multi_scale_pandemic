@@ -1,8 +1,21 @@
+from pdb import set_trace as b
+
 import numpy as np
 
 from coarse_grain_dynamics import coarse_grain_form, coarse_grain_matrix
 
 
+
+def top_eigenvectors(M, k):
+    Lambda, V = np.linalg.eig(M)
+
+    idx = Lambda.argsort()[-k:][::-1]   
+    Lambda_top_k = Lambda[idx]  # top n_b eigenvalues
+    V_top_k = V[:,idx]           # corresponding eigenvectors
+
+    return Lambda_top_k, V_top_k
+    
+    
 class Projections:
     def moore_penrose(self, M_a, g_ba):
         '''
@@ -68,3 +81,31 @@ class Projections:
         M_b = coarse_grain_form(M_a, g_ba, g_ab)
 
         return M_b
+    
+    def sub_matrix_eigenvector(self, M_a, g_ba, return_g_ab=False):
+        '''
+        Evaluate the sub-matrices of M_a corresponding to the regions grouped by g_ba.
+        Take top eigenvector of each sub-matrix, divide cases according to that eigenvector.
+        '''
+        n_b, n_a = g_ba.shape
+        
+        g_ab = g_ba.T * 1.0   # turn int to float
+        
+        for i in range(n_b):
+            row_selector = g_ba[i:i+1, :]
+            col_selector = g_ba[i:i+1, :].T
+            
+            sub_matrix = row_selector * M_a * col_selector
+            
+            lam, v = np.linalg.eig(sub_matrix)
+            eig_idx = lam.argsort()[-1:][::-1]
+            top_lambda = lam[eig_idx]    # top eigenvalue
+            top_eigenvector = v[:, eig_idx]  # corresponding eigenvector
+            
+            g_ab[:, i:i+1] *= top_eigenvector / sum(top_eigenvector)
+        
+        M_b = coarse_grain_form(M_a, g_ba, g_ab)
+        if return_g_ab:
+            return M_b, g_ab
+        return M_b
+        
