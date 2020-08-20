@@ -5,6 +5,7 @@ from pdb import set_trace as b
 import numpy as np
 
 import projections
+import visualize
 
 
 def evolve(M, N_0, num_steps=10):
