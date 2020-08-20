@@ -16,7 +16,7 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
         g_bas = []
 
     if not projection_method:
-        projection_method = get_projection_methods()[0]
+        method_name, projection_method = get_projection_methods()[0]
 
     M_bs = []
     N_bs = []
@@ -28,7 +28,10 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
     N_b_hats.append(N_a)
 
     for i, g_ba in enumerate(g_bas):
-        g_ba_cum = np.linalg.multi_dot(g_bas[:i+1])
+        if i == 0:
+            g_ba_cum = g_ba
+        else:
+            g_ba_cum = np.linalg.multi_dot(g_bas[:i+1])
 
         M_b = projection_method(M_bs[-1], g_ba)
         N_b_0 = g_ba_cum @ N_a_0

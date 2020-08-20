@@ -39,12 +39,12 @@ def upsample_average(grid, scale_factor=2):
 def plot_grid(grid):
     # Matplotlib solution:
     fig, ax = plt.subplots()
-    ax.matshow(grid, cmap=plt.cm.Blues)
+    ax.matshow(np.log(grid + 0.01) / np.log(10.0), cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
 
     for i in range(grid.shape[1]):
         for j in range(grid.shape[0]):
             c = grid[j,i]
-            ax.text(i, j, f'{c:.2f}', va='center', ha='center')
+            ax.text(i, j, f'{c:.1f}', va='center', ha='center')
 
     # Seaborn / Pandas / Jupyter solution:
     '''
