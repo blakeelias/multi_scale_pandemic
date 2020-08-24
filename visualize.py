@@ -8,26 +8,7 @@ from einops import rearrange
 
 from projections import Projections
 from evaluation import get_projection_methods, evaluate
-
-
-def as_grid(N_a):
-    num_regions = N_a.shape[0]
-    side_length = int(math.sqrt(num_regions))
-
-    return rearrange(N_a, '(a b) -> a b', a=side_length)
-
-
-def _tile_array(a, b0, b1):
-    kernel = np.ones((b0, b1), a.dtype)
-    return np.kron(a, kernel)
-
-    '''
-    # Alternative (faster) -- https://stackoverflow.com/questions/32846846/quick-way-to-upsample-numpy-array-by-nearest-neighbor-tiling
-    r, c = a.shape                                    # number of rows/columns
-    rs, cs = a.strides                                # row/column strides 
-    x = as_strided(a, (r, b0, c, b1), (rs, 0, cs, 0)) # view a as larger 4D array
-    return x.reshape(r*b0, c*b1)                      # create new 2D array
-    '''
+from world_generator import _tile_array, as_grid
 
     
 def upsample_average(grid, scale_factor=2):
