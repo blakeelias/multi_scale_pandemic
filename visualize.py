@@ -57,3 +57,25 @@ def animate_grid(grids_downsampled, grid_original, ax=None):
         for j in range(grid_downsampled.shape[0]):
             c = grid_downsampled[j, i]
             # ax.text(i, j, f'{c:.1f}', va='center', ha='center')
+
+
+def dummy_animate():
+    fig, ax = plt.subplots(figsize=(5, 3))
+    ax.set(xlim=(-3, 3), ylim=(-1, 1))
+    
+    x = np.linspace(-3, 3, 91)
+    t = np.linspace(1, 25, 30)
+    X2, T2 = np.meshgrid(x, t)
+    
+    sinT2 = np.sin(2*np.pi*T2/T2.max())
+    F = 0.9*sinT2*np.sinc(X2*(1 + sinT2))
+    
+    line = ax.plot(x, F[0, :], color='k', lw=2)[0]
+    
+    def animate(i):
+        line.set_ydata(F[i, :])
+
+    anim = FuncAnimation(
+        fig, animate, interval=100, frames=len(t)-1)
+
+    return anim
