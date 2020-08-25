@@ -44,7 +44,7 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     
 def animate_grids(grids_downsampled_set, grid_original):
     # Matplotlib solution:
-    fig, axs = plt.subplots(2)
+    fig, axs = plt.subplots(1, 2)
 
     plots = []
     grids_to_plot_set = []
@@ -60,9 +60,9 @@ def animate_grids(grids_downsampled_set, grid_original):
         plot = axs[i].matshow(grids_to_plot[0], cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
         plots.append(plot)
 
-    def animate(i):
-        for j, grids_time_series in enumerate(grids_to_plot_set):
-            plots[j].set_array(grids_time_series[i])
+    def animate(t):
+        for i, grids_time_series in enumerate(grids_to_plot_set):
+            plots[i].set_array(grids_time_series[t])
 
     anim = FuncAnimation(
         fig, animate, interval=250, frames=len(grids_to_plot)-1)
