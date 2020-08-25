@@ -6,12 +6,31 @@ import numpy as np
 
 import projections
 import visualize
+import interventions
 
 
-def evolve(M, N_0, num_steps=10):
-    return [np.linalg.matrix_power(M, t) @ N_0 for t in range(num_steps)]
+def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, intervention_strategy=True):
+    M_current = M
+    M_effective = M_current
+    num_regions = N_0.shape[0]
+    
+    open_closed_status = [interventions.OPEN] * num_regions
+    
+    N_t = []
+    for t_i in range(num_steps):
+        N_t_i = M_effective @ N_0
+        N_t.append(N_t_i)
 
-def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10):
+        if intervention_strategy:
+            M_current = interventions.lock_down(N_t_i, M_current, open_closed_status)
+            M_current = interventions.re_open(N_t_i, M_current, open_closed_status)
+            
+        M_effective = M_current @ M_effective
+    
+    return N_t # [np.linalg.matrix_power(M, t) @ N_0 for t in range(num_steps)]
+
+def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10, lock_down_threshold=1e10, re_open_threshold=-1, intervention_strategy=True):
+    
     if not g_bas:
         g_bas = []
 
@@ -23,7 +42,7 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
     N_b_hats = []
 
     M_bs.append(M_a)
-    N_a = evolve(M_a, N_a_0, num_steps=num_steps)
+    N_a = evolve(M_a, N_a_0, num_steps=num_steps, lock_down_threshold=lock_down_threshold, re_open_threshold=re_open_threshold, intervention_strategy=intervention_strategy)
     N_bs.append(N_a)
     N_b_hats.append(N_a)
 

@@ -25,7 +25,7 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     # Matplotlib solution:
     if not ax:
         fig, ax = plt.subplots()
-    
+
     ax.matshow(np.log(grid_downsampled / downsample_factor + 0.01) / np.log(5.0), cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
 
     for i in range(grid_downsampled.shape[1]):

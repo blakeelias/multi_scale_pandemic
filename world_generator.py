@@ -7,7 +7,7 @@ from einops import rearrange
 def generate_world(num_regions=16, spread_rate=0.2, self_spread_rate=2.0):
     M_a = np.eye(num_regions)
     N_a = np.zeros((num_regions,))
-    N_a[int(num_regions / 2)] = 1.0
+    N_a[int(num_regions / 2) + 8] = 1.0
     
     g_ba = generate_coarse_graining(N_a)
     
