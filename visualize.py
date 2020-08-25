@@ -42,22 +42,24 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     display(x)
     '''
 
-def animate_grid(grids_downsampled, grid_original, ax=None):
+def animate_grids(grids_downsampled, grid_original):
     downsampled_size = (grids_downsampled[0].shape[0] * grids_downsampled[0].shape[1])
     original_size = (grid_original.shape[0] * grid_original.shape[1])
     downsample_factor = original_size / downsampled_size
     
     # Matplotlib solution:
-    if not ax:
-        fig, ax = plt.subplots()
+    fig, ax = plt.subplots()
 
-    ax.matshow(np.log(grid_downsampled / downsample_factor + 0.01) / np.log(5.0), cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
+    grids_to_plot = [np.log(grid_downsampled / downsample_factor + 0.01) / np.log(5.0) for grid_downsampled in grids_downsampled]
+    plot = ax.matshow(grids_to_plot[0], cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
 
-    for i in range(grid_downsampled.shape[1]):
-        for j in range(grid_downsampled.shape[0]):
-            c = grid_downsampled[j, i]
-            # ax.text(i, j, f'{c:.1f}', va='center', ha='center')
+    def animate(i):
+        plot.set_array(grids_to_plot[i])
 
+    anim = FuncAnimation(
+        fig, animate, interval=100, frames=len(grids_to_plot)-1)
+
+    return anim
 
 def dummy_animate():
     fig, ax = plt.subplots(figsize=(5, 3))
