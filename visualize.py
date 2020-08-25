@@ -41,7 +41,7 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     x = x.style.background_gradient(cmap=cm)
     display(x)
     '''
-
+    
 def animate_grids(grids_downsampled, grid_original):
     downsampled_size = (grids_downsampled[0].shape[0] * grids_downsampled[0].shape[1])
     original_size = (grid_original.shape[0] * grid_original.shape[1])
@@ -57,9 +57,19 @@ def animate_grids(grids_downsampled, grid_original):
         plot.set_array(grids_to_plot[i])
 
     anim = FuncAnimation(
-        fig, animate, interval=100, frames=len(grids_to_plot)-1)
+        fig, animate, interval=250, frames=len(grids_to_plot)-1)
 
     return anim
+
+
+def animate_results(results):
+    grid_N_a = [as_grid(N_a_t) for N_a_t in results['N_a']]
+    grid_N_b = [as_grid(N_b_t) for N_b_t in results['N_bs'][1]]
+    anim_fine_grain = animate_grids(grid_N_a, grid_N_a[0])
+    anim_coarse_grain = animate_grids(grid_N_b, grid_N_a[0])
+    
+    return anim_fine_grain, anim_coarse_grain
+                                                
 
 def dummy_animate():
     fig, ax = plt.subplots(figsize=(5, 3))
