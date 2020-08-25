@@ -4,6 +4,8 @@
  * Python 3
  * NumPy library
 
+`sudo apt install ffmpeg`
+
 ## Running
 
 Run the following command:
