@@ -50,7 +50,7 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
         if i == 0:
             g_ba_cum = g_ba
         else:
-            g_ba_cum = np.linalg.multi_dot(g_bas[:i+1])
+            g_ba_cum = np.linalg.multi_dot(list(reversed(g_bas[:i+1])))
 
         M_b = projection_method(M_bs[-1], g_ba)
         N_b_0 = g_ba_cum @ N_a_0
