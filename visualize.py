@@ -44,7 +44,7 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     
 def animate_grids(grids_downsampled_set, grid_original):
     # Matplotlib solution:
-    fig, axs = plt.subplots(1, 2)
+    fig, axs = plt.subplots(1, len(grids_downsampled_set))
 
     plots = []
     grids_to_plot_set = []
@@ -74,7 +74,8 @@ def animate_results(results):
     grid_N_a = [as_grid(N_a_t) for N_a_t in results['N_a']]
     grid_N_b = [as_grid(N_b_t) for N_b_t in results['N_bs'][1]]
 
-    anim_all_scales = animate_grids([grid_N_a, grid_N_b], grid_N_a[0])
+    grid_N_bs = [[as_grid(N_b_t) for N_b_t in N_bs] for N_bs in results['N_bs']]
+    anim_all_scales = animate_grids(grid_N_bs, grid_N_a[0])
     
     # anim_fine_grain = animate_grids(grid_N_a, grid_N_a[0])
     # anim_coarse_grain = animate_grids(grid_N_b, grid_N_a[0])
