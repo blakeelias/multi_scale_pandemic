@@ -9,7 +9,7 @@ def generate_world(num_regions=16, spread_rate=0.2, self_spread_rate=2.0):
     N_a = np.zeros((num_regions,))
     N_a[int(num_regions / 2) + 8] = 1.0
     
-    g_ba = generate_coarse_graining(N_a)
+    g_bas = generate_coarse_grainings(N_a)
     
     N_a_grid = as_grid(N_a)
     for i in range(N_a_grid.shape[0]):
@@ -24,8 +24,21 @@ def generate_world(num_regions=16, spread_rate=0.2, self_spread_rate=2.0):
     for i in range(N_a.shape[0]):
         M_a[i, i] = self_spread_rate
                 
-    return N_a, M_a, g_ba
+    return N_a, M_a, g_bas
 
+
+def generate_coarse_grainings(N_a):
+    g_bas = []
+    num_regions = N_a.shape[0]
+
+    while num_regions > 1:
+        g_ba = generate_coarse_graining(N_a)
+        g_bas.append(g_ba)
+        N_a = np.zeros((int(num_regions / 4),))
+        num_regions = N_a.shape[0]
+        
+    return g_bas
+    
 
 def as_grid(N_a):
     # print('in as_grid')
