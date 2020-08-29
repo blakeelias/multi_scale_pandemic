@@ -22,8 +22,8 @@ def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, i
         N_t.append(N_t_i)
 
         if intervention_strategy:
-            M_current = interventions.lock_down(N_t_i, M_current, open_closed_status)
-            M_current = interventions.re_open(N_t_i, M_current, open_closed_status)
+            M_current = interventions.lock_down(N_t_i, M_current, open_closed_status, lock_down_threshold=lock_down_threshold)
+            M_current = interventions.re_open(N_t_i, M_current, open_closed_status, re_open_threshold=re_open_threshold)
             
         M_effective = M_current @ M_effective
     
