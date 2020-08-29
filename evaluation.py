@@ -29,8 +29,8 @@ def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, i
     
     return N_t # [np.linalg.matrix_power(M, t) @ N_0 for t in range(num_steps)]
 
-def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10, lock_down_threshold=1e10, re_open_threshold=-1, intervention_strategy=True):
-    
+
+def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10, lock_down_threshold=1e10, re_open_threshold=-1, intervention_strategy=True):    
     if not g_bas:
         g_bas = []
 
@@ -130,7 +130,6 @@ def main():
             print('lam_fine, v_fine')
             print(lam_fine)
             print(v_fine)
-            
 
         
 if __name__ == '__main__':
