@@ -42,23 +42,26 @@ def plot_grid(grid_downsampled, grid_original, ax=None):
     display(x)
     '''
     
-def animate_grids(grids_downsampled_set, grid_original):
+def animate_grids(grids_downsampled_set_rows, grid_original):
     # Matplotlib solution:
-    fig, axs = plt.subplots(1, len(grids_downsampled_set))
+    num_rows = len(grids_downsampled_set_rows)
+    num_cols = max([len(row) for row in grids_downsampled_set_rows])
+    fig, axs = plt.subplots(num_rows, num_cols)
 
     plots = []
     grids_to_plot_set = []
     
-    for i, grid_series in enumerate(grids_downsampled_set):
-        downsampled_size = (grid_series[0].shape[0] * grid_series[0].shape[1])
-        original_size = (grid_original.shape[0] * grid_original.shape[1])
-        downsample_factor = original_size / downsampled_size
+    for row_num, grid_series_row in enumerate(grids_downsampled_set_rows):
+        for col_num, grid_series in enumerate(grid_series_row):
+            downsampled_size = (grid_series[0].shape[0] * grid_series[0].shape[1])
+            original_size = (grid_original.shape[0] * grid_original.shape[1])
+            downsample_factor = original_size / downsampled_size
 
-        grids_to_plot = [np.log(grid_downsampled / downsample_factor + 0.01) / np.log(5.0) for grid_downsampled in grid_series]
-        grids_to_plot_set.append(grids_to_plot)
+            grids_to_plot = [np.log(grid_downsampled / downsample_factor + 0.01) / np.log(5.0) for grid_downsampled in grid_series]
+            grids_to_plot_set.append(grids_to_plot)
         
-        plot = axs[i].matshow(grids_to_plot[0], cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
-        plots.append(plot)
+            plot = axs[row_num, col_num].matshow(grids_to_plot[0], cmap=plt.cm.Blues, vmin=0.0, vmax=3.0)
+            plots.append(plot)
 
     def animate(t):
         for i, grids_time_series in enumerate(grids_to_plot_set):
@@ -72,10 +75,11 @@ def animate_grids(grids_downsampled_set, grid_original):
 
 def animate_results(results):
     grid_N_a = [as_grid(N_a_t) for N_a_t in results['N_a']]
-    grid_N_b = [as_grid(N_b_t) for N_b_t in results['N_bs'][1]]
 
     grid_N_bs = [[as_grid(N_b_t) for N_b_t in N_bs] for N_bs in results['N_bs']]
-    anim_all_scales = animate_grids(grid_N_bs, grid_N_a[0])
+    grid_N_b_hats = [[as_grid(N_b_t) for N_b_t in N_bs] for N_bs in results['N_b_hats']]
+
+    anim_all_scales = animate_grids([grid_N_bs, grid_N_b_hats], grid_N_a[0])
     
     # anim_fine_grain = animate_grids(grid_N_a, grid_N_a[0])
     # anim_coarse_grain = animate_grids(grid_N_b, grid_N_a[0])
