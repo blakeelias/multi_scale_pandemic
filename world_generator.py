@@ -7,7 +7,7 @@ from einops import rearrange
 def generate_world(num_regions=16, spread_rate=0.2, self_spread_rate=2.0, large_case_count=False):
     M_a = np.eye(num_regions)
     N_a = np.zeros((num_regions,))
-    N_a[int(num_regions / 2) + 8] = 1.0
+    N_a[int(num_regions / 2) + 2] = 1.0
 
     if large_case_count:
         for i in range(num_regions):
