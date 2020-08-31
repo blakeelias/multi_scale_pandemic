@@ -56,7 +56,12 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
         N_b_0 = g_ba_cum @ N_a_0
 
         N_b = [g_ba @ N_b_t for N_b_t in N_bs[-1]]
-        N_b_hat = evolve(M_b, N_b_0, num_steps=num_steps)
+
+        ratio = g_ba.shape[1] / g_ba.shape[0]
+        scaled_lock_down_threshold = lock_down_threshold * ratio
+        scaled_re_open_threshold = re_open_threshold * ratio
+        
+        N_b_hat = evolve(M_b, N_b_0, num_steps=num_steps, lock_down_threshold=scaled_lock_down_threshold, re_open_threshold=scaled_re_open_threshold, intervention_strategy=intervention_strategy)
 
         M_bs.append(M_b)
         N_bs.append(N_b)
