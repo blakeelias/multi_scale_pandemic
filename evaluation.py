@@ -57,7 +57,7 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
 
         N_b = [g_ba @ N_b_t for N_b_t in N_bs[-1]]
 
-        ratio = g_ba.shape[1] / g_ba.shape[0]
+        ratio = g_ba_cum.shape[1] / g_ba_cum.shape[0]
         scaled_lock_down_threshold = lock_down_threshold * ratio
         scaled_re_open_threshold = re_open_threshold * ratio
         
