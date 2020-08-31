@@ -88,10 +88,17 @@ def animate_results(results):
     # anim_fine_grain, anim_coarse_grain
                                                 
 
-def plot_case_counts(N_a_time_series, N_b_time_series, coarse_grain_region, g_ba):
+def plot_case_counts_two_scales(N_a_time_series, N_b_time_series, coarse_grain_region, g_ba):
     t = list(range(len(N_a_time_series)))
     plt.plot(t, [N_b_t[coarse_grain_region] for N_b_t in N_b_time_series])
     fine_grain_regions = g_ba[coarse_grain_region, :].nonzero()[0]
     for fine_grain_region in fine_grain_regions:
         plt.plot(t, [N_a_t[fine_grain_region] for N_a_t in N_a_time_series])
+    plt.show()
+
+
+def plot_case_counts_one_scale(N_b_time_series, N_b_hat_time_series, region):
+    t = list(range(len(N_b_time_series)))
+    plt.plot(t, [N_b_t[region] for N_b_t in N_b_time_series])
+    plt.plot(t, [N_b_hat_t[region] for N_b_hat_t in N_b_hat_time_series])
     plt.show()
