@@ -19,7 +19,11 @@ def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, i
     
     N_t = []
     for t_i in range(num_steps):
-        N_t_i = M_effective @ N_0
+        if not stochastic:
+            N_t_i = M_effective @ N_0
+        else:
+            N_t_i = stochasticity.poisson_process(M_effective @ N_0)
+            
         N_t.append(N_t_i)
 
         if intervention_strategy:
