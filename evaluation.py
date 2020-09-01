@@ -7,7 +7,6 @@ import numpy as np
 import projections
 import visualize
 import interventions
-import stochasticity
 
 
 def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, intervention_strategy=True, stochastic=True):

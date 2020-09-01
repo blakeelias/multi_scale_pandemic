@@ -20,7 +20,7 @@ def generate_world(num_regions=16, spread_rate=0.2, self_spread_rate=2.0, large_
     N_a_grid = as_grid(N_a)
     for i in range(N_a_grid.shape[0]):
         for j in range(N_a_grid.shape[1]):
-            neighbors = neighbors_3(N_a_grid, i, j)
+            neighbors = neighbors_4(N_a_grid, i, j)
             for (k, l) in neighbors:
                 region_idx_self = row_col_to_index(N_a_grid, i, j)
                 region_idx_neighbor = row_col_to_index(N_a_grid, k, l)
@@ -70,9 +70,8 @@ def _tile_array(a, b0, b1):
     '''
 
 
-def neighbors_3(grid, i, j):
+def neighbors_8(grid, i, j):
     candidates = [
-        (i, j),
         (i-1, j),
         (i+1, j),
         (i, j-1),
@@ -85,8 +84,18 @@ def neighbors_3(grid, i, j):
 
     return [(i, j) for (i, j) in candidates if (i >= 0 and i < grid.shape[0]) and (j >= 0 and j < grid.shape[1])]
 
+def neighbors_4(grid, i, j):
+    candidates = [
+        (i-1, j),
+        (i+1, j),
+        (i, j-1),
+        (i, j+1),
+    ]
 
-def neighbors_2(grid, i, j):
+    return [(i, j) for (i, j) in candidates if (i >= 0 and i < grid.shape[0]) and (j >= 0 and j < grid.shape[1])]
+
+
+def coarse_grain_neighbors(grid, i, j):
     candidates = [
         (i, j),
         (i+1, j),
@@ -127,7 +136,7 @@ def generate_coarse_graining(N_a):
     for coarse_grain_row in range(grid_N_b.shape[0]):
         for coarse_grain_col in range(grid_N_b.shape[1]):
             coarse_grain_idx = row_col_to_index(grid_N_b, coarse_grain_row, coarse_grain_col)
-            members = neighbors_2(grid_N_a, coarse_grain_row * 2, coarse_grain_col * 2)
+            members = coarse_grain_neighbors(grid_N_a, coarse_grain_row * 2, coarse_grain_col * 2)
             for (fine_grain_row, fine_grain_col) in members:
                 fine_grain_idx = row_col_to_index(grid_N_a, fine_grain_row, fine_grain_col)
                 g_ba[coarse_grain_idx, fine_grain_idx] = 1
