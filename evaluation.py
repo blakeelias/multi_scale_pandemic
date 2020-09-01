@@ -7,9 +7,10 @@ import numpy as np
 import projections
 import visualize
 import interventions
+import stochasticity
 
 
-def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, intervention_strategy=True):
+def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, intervention_strategy=True, stochastic=True):
     M_current = M
     M_effective = M_current
     num_regions = N_0.shape[0]
@@ -30,7 +31,7 @@ def evolve(M, N_0, num_steps=10, lock_down_threshold=1e6, re_open_threshold=0, i
     return N_t # [np.linalg.matrix_power(M, t) @ N_0 for t in range(num_steps)]
 
 
-def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10, lock_down_threshold=1e10, re_open_threshold=-1, intervention_strategy=True):    
+def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps=10, lock_down_threshold=1e10, re_open_threshold=-1, intervention_strategy=True, stochastic=True):
     if not g_bas:
         g_bas = []
 
@@ -42,7 +43,7 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
     N_b_hats = []
 
     M_bs.append(M_a)
-    N_a = evolve(M_a, N_a_0, num_steps=num_steps, lock_down_threshold=lock_down_threshold, re_open_threshold=re_open_threshold, intervention_strategy=intervention_strategy)
+    N_a = evolve(M_a, N_a_0, num_steps=num_steps, lock_down_threshold=lock_down_threshold, re_open_threshold=re_open_threshold, intervention_strategy=intervention_strategy, stochastic=stochastic)
     N_bs.append(N_a)
     N_b_hats.append(N_a)
 
@@ -52,6 +53,12 @@ def evaluate(M_a=None, projection_method=None, g_bas=None, N_a_0=None, num_steps
         else:
             g_ba_cum = np.linalg.multi_dot(list(reversed(g_bas[:i+1])))
 
+        #print('in evaluate()')
+        #print('M_a')
+        #print(M_bs[-1])
+        #print('g_ba')
+        #print(g_ba)
+            
         M_b = projection_method(M_bs[-1], g_ba)
         N_b_0 = g_ba_cum @ N_a_0
 
